@@ -8,6 +8,10 @@ defmodule Huffman do
     represent english but it is probably not that far off'
   end
 
+  def sample2 do
+    'abcaba'
+  end
+
   def text() do
     'this is something that we should encode'
   end
@@ -27,39 +31,49 @@ defmodule Huffman do
   # Create a Huffman tree given a sample text
   def tree(sample) do
     freq = freq(sample)
+    huffman(freq)
   end
 
+  # Find the frequency of the characters in the sample text
   def freq(sample) do freq(sample, []) end
   def freq([], freq) do freq end
   def freq([char | rest], freq) do
+    freq(rest, count(char, freq))
+  end
 
-    if(counted(char, freq) == :true) do
-      freq(rest, freq)
+  # Count how many occurences of a character char
+  def count(char, []) do [{char, 1}] end
+  def count(char, [{char, n} | rest]) do
+    [{char, n+1} | rest]
+  end
+  def count(char, [head | tail]) do
+    [head | count(char, tail)]
+  end
+
+  def huffman(freq) do
+    sorted = sort(freq, [])
+    build_tree(sorted)
+  end
+
+  def sort([], l) do l end
+  def sort([h1 | t1], l) do
+    sort(t1, insert(h1, l))
+  end
+
+  def insert(e, []) do [e] end
+  def insert({c1, f1}, [{c2, f2} | tail]) do
+    if(f1 < f2) do
+      [{c1, f1}, {c2, f2} | tail]
     else
-      freq(rest, freq ++ [freq(char, rest, 1)])
+      [{c2, f2} | insert({c1, f1}, tail)]
     end
   end
 
-  def freq(char, [], count) do
-    {char, count}
+  def build_tree([]) do [] end
+  def build_tree([e]) do e end
+  def build_tree([{c1, f1}, {c2, f2} | tail]) do
+    build_tree(insert({{c1, c2}, f1+f2}, tail))
   end
-  def freq(char, [h | t], count)  do
-    if(char == h) do
-      freq(char, t, count+1)
-    else
-      freq(char, t, count)
-    end
-  end
-
-  def counted(char, []) do :false end
-  def counted(char, [h | t]) do
-    if ({char, _} = h) do
-      :true
-    else
-      counted(char, t)
-    end
-  end
-
 
   # Create an encoding table containing the mapping from
   # characters to codes given a Huffman tree.
