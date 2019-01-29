@@ -16,8 +16,8 @@ defmodule Huffman do
     'this is something that we should encode'
   end
 
-  def test do
-    sample = sample()
+  def test() do
+    sample = sample2()
     tree = tree(sample)
     """
     encode = encode_table(tree)
@@ -50,16 +50,20 @@ defmodule Huffman do
     [head | count(char, tail)]
   end
 
+  # Given a list of character frequencies, build a Huffman tree
   def huffman(freq) do
     sorted = sort(freq, [])
+    IO.inspect(sorted)
     build_tree(sorted)
   end
 
+  # Sort a given list
   def sort([], l) do l end
   def sort([h1 | t1], l) do
     sort(t1, insert(h1, l))
   end
 
+  # Insert an element e into the right place in a list
   def insert(e, []) do [e] end
   def insert({c1, f1}, [{c2, f2} | tail]) do
     if(f1 < f2) do
@@ -69,18 +73,28 @@ defmodule Huffman do
     end
   end
 
+  # Given a sorted list, build a huffman tree
   def build_tree([]) do [] end
   def build_tree([e]) do e end
   def build_tree([{c1, f1}, {c2, f2} | tail]) do
     build_tree(insert({{c1, c2}, f1+f2}, tail))
   end
 
+
   # Create an encoding table containing the mapping from
   # characters to codes given a Huffman tree.
-  def encode_table(tree) do
-
+  def encode_table({tree, freq}) do
+    dive(tree, [])
   end
 
+
+  def dive({left, right}, seq) do
+    [dive(left, [0 | seq]) | dive(right, [1 | seq])]
+  end
+  def dive(leaf, seq) do
+    {[leaf], Enum.reverse(seq)}
+  end
+"""
   # Create an decoding table containing the mapping from
   # codes to characters given a Huffman tree
   def decode_table(tree) do
@@ -96,4 +110,5 @@ defmodule Huffman do
   def decode(seq, table) do
 
   end
+  """
 end
