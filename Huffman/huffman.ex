@@ -87,12 +87,13 @@ defmodule Huffman do
     dive(tree, [])
   end
 
-
   def dive({left, right}, seq) do
-    [dive(left, [0 | seq]) | dive(right, [1 | seq])]
+    lt = dive(left, [0 | seq])
+    rt = dive(right, [1 | seq])
+    lt ++ rt
   end
   def dive(leaf, seq) do
-    {[leaf], Enum.reverse(seq)}
+    [{[leaf], Enum.reverse(seq)}]
   end
 """
   # Create an decoding table containing the mapping from
