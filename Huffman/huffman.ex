@@ -17,15 +17,14 @@ defmodule Huffman do
   end
 
   def test() do
-    sample = sample2()
+    sample = sample()
     tree = tree(sample)
-    """
     encode = encode_table(tree)
-    decode = decode_table(tree)
+    decode = encode_table(tree)
     text = text()
     seq = encode(text, encode)
     decode(seq, decode)
-    """
+
   end
 
   # Create a Huffman tree given a sample text
@@ -53,7 +52,6 @@ defmodule Huffman do
   # Given a list of character frequencies, build a Huffman tree
   def huffman(freq) do
     sorted = sort(freq, [])
-    IO.inspect(sorted)
     build_tree(sorted)
   end
 
@@ -80,10 +78,9 @@ defmodule Huffman do
     build_tree(insert({{c1, c2}, f1+f2}, tail))
   end
 
-
   # Create an encoding table containing the mapping from
   # characters to codes given a Huffman tree.
-  def encode_table({tree, freq}) do
+  def encode_table({tree, _}) do
     dive(tree, [])
   end
 
@@ -95,21 +92,39 @@ defmodule Huffman do
   def dive(leaf, seq) do
     [{[leaf], Enum.reverse(seq)}]
   end
-"""
-  # Create an decoding table containing the mapping from
-  # codes to characters given a Huffman tree
-  def decode_table(tree) do
-
-  end
 
   # Encode the text using the mapping in the table
-  def encode(text, table) do
+  def encode([], table) do [] end
+  def encode([head | tail], table) do
+    enc(head, table) ++ encode(tail, table)
+  end
 
+  def enc(symbol, []) do [] end
+  def enc(symbol, [{char, code} | tail]) do
+    if([symbol] == char) do
+      code
+    else
+      enc(symbol, tail)
+    end
   end
 
   # Decode the bit squence using the mapping in the table
+  def decode([], _) do [] end
   def decode(seq, table) do
-
+    {char, rest} = decode_char(seq, 1, table)
+    [char | decode(rest, table)]
   end
-  """
+
+
+  def decode_char(seq, n, table) do
+    {code, rest} = Enum.split(seq, n)
+        
+    case List.keyfind(table, code, 1) do
+      {a, b} ->
+        IO.inspect({a, b})
+        {a, rest}
+      nil ->
+        decode_char(seq, n+1, table)
+    end
+  end
 end
