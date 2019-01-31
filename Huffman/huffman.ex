@@ -115,13 +115,11 @@ defmodule Huffman do
     [char | decode(rest, table)]
   end
 
-
   def decode_char(seq, n, table) do
     {code, rest} = Enum.split(seq, n)
-        
+
     case List.keyfind(table, code, 1) do
-      {a, b} ->
-        IO.inspect({a, b})
+      {a, _} ->
         {a, rest}
       nil ->
         decode_char(seq, n+1, table)
