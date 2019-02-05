@@ -1,7 +1,0 @@
-defmodule Interpreter do
-
-
-
-
-
-end
