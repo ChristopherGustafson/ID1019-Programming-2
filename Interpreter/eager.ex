@@ -1,5 +1,6 @@
 defmodule Eager do
 
+
   # Evaluate an expression, return {:ok, data strucutre} or :error
   def eval_expr({:atm, id}, _) do
     {:ok, id}
@@ -25,6 +26,32 @@ defmodule Eager do
           {:ok, ts} ->
             {:ok, [str | ts]}
         end
+    end
+  end
+
+  def eval_expr({:case, expr, cls}, env) do
+    case eval_expr(expr, env) do
+      :error ->
+        :error
+      {:ok, str} ->
+        eval_cls(cls, str, env)
+    end
+  end
+
+  def eval_expr({:lambda, par, free, seq}, env) do
+    case Env.closure
+  end
+
+  # Evaluate a given a data structure against a list of clauses
+  def eval_cls([], _, _) do :error end
+  def eval_cls([{:clause, ptr, seq} | cls], str, env) do
+    vars = extract_vars(ptr)
+    env = Env.remove(vars, env)
+    case eval_match(ptr, str, env) do
+      :fail ->
+        eval_cls(cls, str, env)
+      {:ok, env} ->
+        eval_seq(seq, env)
     end
   end
 
