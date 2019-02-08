@@ -1,7 +1,6 @@
 defmodule Eager do
 
-
-  # Evaluate an expression, return {:ok, data strucutre} or :error
+  # Evaluate an expression, return {:ok, data structure} or :error
   def eval_expr({:atm, id}, _) do
     {:ok, id}
   end
@@ -38,9 +37,6 @@ defmodule Eager do
     end
   end
 
-  def eval_expr({:lambda, par, free, seq}, env) do
-    case Env.closure
-  end
 
   # Evaluate a given a data structure against a list of clauses
   def eval_cls([], _, _) do :error end
@@ -59,7 +55,7 @@ defmodule Eager do
   def eval_match(:ignore, _, env) do
     {:ok, env}
   end
-  def eval_match({:atm, _}, _, env) do
+  def eval_match({:atm, id}, id, env) do
     {:ok, env}
   end
   def eval_match({:var, id}, str, env) do
@@ -98,7 +94,6 @@ defmodule Eager do
 
         case eval_match(pattern, str, env) do
           :fail ->
-
             :error
           {:ok, env} ->
             eval_seq(seqTail, env)

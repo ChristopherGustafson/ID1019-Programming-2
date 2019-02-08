@@ -10,7 +10,7 @@ defmodule Env do
 
   def lookup(_, []) do nil end
   def lookup(id, [{id, s} | _]) do {id, s} end
-  def lookup(id, [{i, s} | t]) do
+  def lookup(id, [{_, _} | t]) do
     lookup(id, t)
   end
 
