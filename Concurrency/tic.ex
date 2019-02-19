@@ -24,4 +24,5 @@ defmodule Tic do
       x ->
         IO.puts("end: #{x}")
     end
+  end
 end
