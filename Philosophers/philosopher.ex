@@ -1,5 +1,7 @@
 defmodule Philosopher do
 
+  @grabDelay 0
+
   def start(hunger, right, left, name, ctrl) do
     spawn_link(fn -> dreaming(hunger, right, left, name, ctrl) end)
   end
@@ -11,19 +13,28 @@ defmodule Philosopher do
   end
 
   def waiting(hunger, right, left, name, ctrl) do
+
     IO.puts("#{name} is waiting for the left chopstick...")
-    case Chopstick.request(left, 10000) do
+    case Chopstick.request(left, 1000) do
+
       :failed ->
+        Chopstick.return(left)
         IO.puts("#{name} gave up trying to pick up the left chopstick")
         dreaming(hunger, right, left, name, ctrl)
+
       :ok ->
         IO.puts("#{name} picked up the left chopstick")
-        sleep(1000)
+        sleep(@grabDelay)
         IO.puts("#{name} is waiting for the right chopstick...")
-        case Chopstick.request(right, 10000) do
+
+        case Chopstick.request(right, 1000) do
+
           :failed ->
             IO.puts("#{name} gave up trying to pick up the right chopstick")
+            Chopstick.return(left)
+            Chopstick.return(right)
             dreaming(hunger, right, left, name, ctrl)
+
           :ok ->
             IO.puts("#{name} picked up the right chopstick")
             eating(hunger, right, left, name, ctrl)
@@ -40,6 +51,7 @@ defmodule Philosopher do
   end
   def eating(hunger, right, left, name, ctrl) do
     IO.puts("#{name} is eating...")
+    sleep(200)
     Chopstick.return(left)
     Chopstick.return(right)
     dreaming(hunger-1, right, left, name, ctrl)
