@@ -31,6 +31,7 @@ defmodule Rudy do
     end
   end
 
+
   def request(client) do
     recv = :gen_tcp.recv(client, 0)
     case recv do
@@ -46,6 +47,6 @@ defmodule Rudy do
 
   def reply({{:get, _, _}, _, _}) do
     :timer.sleep(10)
-    HTTP.ok("Hello!")
+    HTTP.ok("<h1>Hello there!</h1>")
   end
 end

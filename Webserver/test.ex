@@ -1,6 +1,6 @@
 defmodule Test do
 
-  @number_requests 100
+  @number_requests 1000
 
   def bench(host, port) do
     start = Time.utc_now()
