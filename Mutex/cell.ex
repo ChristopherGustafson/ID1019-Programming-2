@@ -7,17 +7,9 @@ defmodule Cell do
       {:swap, value, from} ->
         send(from, {:ok, state})
         cell(value)
-
       {:set, value, from} ->
         send(from, :ok)
         cell(value)
-    end
-  end
-
-  def swap(cell, value) do
-    send(cell, {:swap, value, self()})
-    receive do
-      {:ok, value} -> value
     end
   end
 
@@ -35,4 +27,10 @@ defmodule Cell do
     end
   end
 
+  def swap(cell, value) do
+    send(cell, {:swap, value, self()})
+    receive do
+      {:ok, value} -> value
+    end
+  end
 end
